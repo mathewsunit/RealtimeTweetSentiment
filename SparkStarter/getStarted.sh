@@ -1,4 +1,12 @@
 #! /bin/bash
+# This script does the following things
+# 1. Install Kafka to local folder
+# 2. Start Zookeeper and 3*Kafka instances
+# 3. Enable collection on topic twitter
+# 4. Install Elastisearch and start it
+# 5. Install and start Kibana
+# 6. Install and start Logstash
+# Note: All instances are started in ~ daemon mode and log files for the different processes are also created
 
 script_dir=$(dirname $0)
 DAEMON_PATH_KAFKA=$script_dir/kafka/

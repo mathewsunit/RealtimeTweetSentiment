@@ -48,10 +48,10 @@ object TwitterProducer {
     val pipeline: StanfordCoreNLP = new StanfordCoreNLP(props)
     val utils = new SentimentUtils
 
-    val textAndSentences: DStream[(String, String, String)] =
+    val textAndSentences: DStream[(String, String)] =
     tweets.filter(x => x.getLang == "en").
       map(_.getText).
-      map(tweetText => (tweetText, cleanText(tweetText), utils.computeSentiment(cleanText(tweetText)).toString))
+      map(tweetText => (clean(tweetText), utils.computeSentiment(clean(tweetText)).toString))
 
     textAndSentences.print()
     textAndSentences.foreachRDD( rdd => {

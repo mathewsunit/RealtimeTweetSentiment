@@ -31,9 +31,11 @@ class SentimentUtils extends Serializable {
   def normalizeCoreNLPSentiment(sentiment: Double): Int = {
     sentiment match {
       case s if s <= 0.0 => 0
-      case s if s < 2.0 => -1
-      case s if s < 3.0 => 0
-      case s if s < 5.0 => 1
+      case s if s < 1.0 => 0
+      case s if s < 2.0 => 1
+      case s if s < 3.0 => 2
+      case s if s < 4.0 => 3
+      case s if s < 5.0 => 4
       case _ => 0
     }
   }
