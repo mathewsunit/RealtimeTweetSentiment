@@ -48,14 +48,13 @@ object TwitterProducer {
     val pipeline: StanfordCoreNLP = new StanfordCoreNLP(props)
     val utils = new SentimentUtils
 
-    val textAndSentences: DStream[(String, String)] =
+    val textAndSentences: DStream[String] =
     tweets.filter(x => x.getLang == "en").
       map(_.getText).
-      map(tweetText => (clean(tweetText), utils.computeSentiment(clean(tweetText)).toString))
+      map(tweetText => (utils.computeSentiment(clean(tweetText)).toString))
 
     textAndSentences.print()
     textAndSentences.foreachRDD( rdd => {
-
       rdd.foreachPartition( partition => {
         val producerProps = new HashMap[String, Object]()
         producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBrokers)
@@ -65,13 +64,11 @@ object TwitterProducer {
           "org.apache.kafka.common.serialization.StringSerializer")
         val producer = new KafkaProducer[String, String](producerProps)
         partition.foreach( record => {
-          val data = record.toString
-          val message = new ProducerRecord[String, String](topic, null, data)
+          val message = new ProducerRecord[String, String](topic, null, record)
           producer.send(message)
         } )
         producer.close()
       })
-
     })
 
     streamingContext.start()
